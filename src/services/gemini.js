@@ -13,7 +13,7 @@ export async function processarBriefing(briefingData) {
   const prompt = buildPrompt(briefingData);
 
   const response = await ai.models.generateContent({
-    model: "gemini-1.5-flash-8b",
+    model: "gemini-1.5-flash",
     contents: prompt,
   });
 
