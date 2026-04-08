@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { buildPrompt } from '../utils/buildPrompt';
 
 export async function processarBriefing(briefingData) {
@@ -8,16 +8,12 @@ export async function processarBriefing(briefingData) {
     throw new Error('VITE_GEMINI_API_KEY não encontrada.');
   }
 
-  const ai = new GoogleGenerativeAI({ apiKey });
-
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const prompt = buildPrompt(briefingData);
 
-  const response = await ai.models.generateContent({
-    model: "gemini-1.5-flash",
-    contents: prompt,
-  });
-
-  const text = response.text;
+  const result = await model.generateContent(prompt);
+  const text = result.response.text();
   const clean = text.replace(/```json|```/g, '').trim();
 
   try {
