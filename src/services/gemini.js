@@ -1,19 +1,23 @@
 import { GoogleGenAI } from "@google/genai";
 import { buildPrompt } from '../utils/buildPrompt';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 export async function processarBriefing(briefingData) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('VITE_GEMINI_API_KEY não encontrada.');
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
   const prompt = buildPrompt(briefingData);
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: "gemini-2.0-flash",
     contents: prompt,
   });
 
   const text = response.text;
-
-  // Remove possíveis blocos de código markdown que o Gemini pode adicionar
   const clean = text.replace(/```json|```/g, '').trim();
 
   try {
